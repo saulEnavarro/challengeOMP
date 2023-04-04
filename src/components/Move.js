@@ -1,25 +1,74 @@
 import { useState } from 'react';
-import Moveable from 'react-moveable';
+import React from 'react';
+import Moveable from "react-moveable";
 import "./Move.css"
 
-function Move() {
+function Move(props) {
+    console.log(props)
+
+    const targetRef = React.useRef(null);
 
     const [impPosition, setImgPosition] = useState({x:0, y:0})
-    const [imgSize, setImgSize] = useState({width:0, height:0})
-    const [imgRotation, setImgRotation] = useState(0)
-
-    const handleDrag = ({ target, beforeTranslate }) => {
-        setImgPosition({ x: beforeTranslate[0], y: beforeTranslate[1] });
-      };
+    const [imgScale, setImgScale] = useState({width:1, height:1})
+    const [imgRotation, setImgRotation] = useState({degree:0})
     
-    const handleResize = ({ target, width, height }) => {
-        setImgSize({ width, height });
-      };
+    
+    function handleDrag({beforeTranslate}) {
+        const [x, y] = beforeTranslate;
+        setImgPosition({ x, y });
+        console.log(`translate(${impPosition.x}px, ${impPosition.y}px)`)
+        return `translate(${impPosition.x}px, ${impPosition.y}px)`;
+      }
+      function handleResize({width,height}){
+        setImgScale({ width, height });
+        return `scale(${imgScale.width}, ${imgScale.height})`;
+      };    
+      function handleRotation({degree}){
+        setImgRotation({ degree});
+        return `rotate(${imgRotation.degree})`;
+      };    
 
     return (
-        <Moveable
-          target={<img src="https://via.placeholder.com/200x200.png?text=Move+me!" alt="Move me!" />}
-        />
+        <div className="root">
+            <div className="container">
+                <div className="target" ref={targetRef}>Move Me!</div>
+                <Moveable
+                    target={targetRef}
+
+                    draggable={true}
+                    scalable= {true}
+                    rotatable= {true}
+
+
+                    throttleDrag={1}
+                    edgeDraggable={false}
+                    startDragRotate={0}
+                    throttleDragRotate={0}
+
+                    onDrag={(e) => {
+                    e.target.style.transform = e.transform;
+                    console.log(e)
+                    }}
+
+
+                    keepRatio={false}
+                    throttleScale={0}
+                    renderDirections={["nw","n","ne","w","e","sw","s","se"]}
+                    onScale={e => {
+                        e.target.style.transform = e.drag.transform;
+                        console.log("onScale",e.drag.transform)
+                    }}
+
+
+                    throttleRotate={0}
+                    rotationPosition={"top"}
+                    onRotate={e => {
+                        e.target.style.transform = e.drag.transform;
+                        console.log("onRotate", e.drag.transform)
+                    }}
+                />
+            </div>
+        </div>
     );
 }
 

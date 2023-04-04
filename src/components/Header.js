@@ -1,14 +1,12 @@
 
 import './Header.css';
 
-function Header() {
-
-
+function Header(props) {
   return (
     <div className="Header">
       <header className="Header-header">
         <h1>
-        Front-End Cha7llenge Original Marketing ProtoStar React Dev 🧑🏽‍💻
+        {props.title}
         </h1> 
       </header>
     </div>
